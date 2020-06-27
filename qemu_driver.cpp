@@ -211,7 +211,7 @@ int main(int argc, char **argv) {
   if (LLVMFuzzerInitialize)
     LLVMFuzzerInitialize(&argc, &argv);
 
-  if (argc > 1 && argv[1][0] != '-')
+  if (argc > 1 && argv[1][0] != '-' && atoi(argv[1]) <= 0)
     return ExecuteFilesOnyByOne(argc, argv);
 
   ssize_t n_read = read(0, AflInputBuf, kMaxAflInputSize);
