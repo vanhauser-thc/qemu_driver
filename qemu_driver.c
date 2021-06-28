@@ -29,10 +29,6 @@ $ afl-fuzz -Q -i in -o out -- ./a.out
 #include <string.h>
 #include <unistd.h>
 
-#include <fstream>
-#include <iostream>
-#include <vector>
-
 #ifdef __linux__
   #define LIBFUZZER_LINUX 1
   #define LIBFUZZER_APPLE 0
@@ -84,8 +80,9 @@ static volatile char suppress_warning1 = AFL_DEFER_FORKSVR[0];
 */
 
 // Input buffer.
-static const size_t kMaxAflInputSize = 1024000;
-static uint8_t AflInputBuf[kMaxAflInputSize];
+#define MAX_FILE_SIZE 1024000
+static const size_t kMaxAflInputSize = MAX_FILE_SIZE;
+static uint8_t AflInputBuf[MAX_FILE_SIZE];
 
 /*
 // Keep track of where stderr content is being written to, so that
@@ -148,8 +145,8 @@ static void maybe_close_fd_mask() {
 // Define LLVMFuzzerMutate to avoid link failures for targets that use it
 // with libFuzzer's LLVMFuzzerCustomMutator.
 size_t LLVMFuzzerMutate(uint8_t *Data, size_t Size, size_t MaxSize) {
-  assert(false && "LLVMFuzzerMutate should not be called from afl_driver");
-  return 0;
+  fprintf(stderr, "LLVMFuzzerMutate should not be called from afl_driver\n");
+  exit(1);
 }
 
 int main(int argc, char **argv) {
