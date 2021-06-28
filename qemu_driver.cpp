@@ -71,6 +71,7 @@ $ afl-fuzz -Q -i in -o out -- ./a.out
 int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size);
 __attribute__((weak)) int LLVMFuzzerInitialize(int *argc, char ***argv);
 
+/*
 // Notify AFL about persistent mode.
 static volatile char AFL_PERSISTENT[] = "##SIG_AFL_PERSISTENT##";
 int __afl_persistent_loop(unsigned int);
@@ -80,11 +81,13 @@ static volatile char suppress_warning2 = AFL_PERSISTENT[0];
 static volatile char AFL_DEFER_FORKSVR[] = "##SIG_AFL_DEFER_FORKSRV##";
 void __afl_manual_init();
 static volatile char suppress_warning1 = AFL_DEFER_FORKSVR[0];
+*/
 
 // Input buffer.
 static const size_t kMaxAflInputSize = 1024000;
 static uint8_t AflInputBuf[kMaxAflInputSize];
 
+/*
 // Keep track of where stderr content is being written to, so that
 // dup_and_close_stderr can use the correct one.
 static FILE *output_file = stderr;
@@ -140,6 +143,7 @@ static void maybe_close_fd_mask() {
   if (fd_mask & 1)
     close_stdout();
 }
+*/
 
 // Define LLVMFuzzerMutate to avoid link failures for targets that use it
 // with libFuzzer's LLVMFuzzerCustomMutator.
@@ -153,15 +157,13 @@ int main(int argc, char **argv) {
          "This binary is built for a qemu_mode fuzzer.\n"
          "To run the target function on individual input(s) execute this:\n"
          "  %s < INPUT_FILE\n"
-         "or\n"
-         "  %s INPUT_FILE\n"
          "To fuzz with afl-fuzz execute this:\n"
          "  afl-fuzz [afl-flags] -- %s\n"
          "======================================================\n",
          argv[0], argv[0]);
 
-  maybe_duplicate_stderr();
-  maybe_close_fd_mask();
+  // maybe_duplicate_stderr();
+  // maybe_close_fd_mask();
   if (LLVMFuzzerInitialize)
     LLVMFuzzerInitialize(&argc, &argv);
 
